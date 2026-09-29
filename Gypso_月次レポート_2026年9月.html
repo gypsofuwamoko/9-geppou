@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Gypso 月次レポート 2026年9月</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#F6F2EC; --paper:#FFFFFF; --ink:#3B3229; --sub:#8A7F72; --line:#E3DACD;
+    --rose:#B97A63; --rose-soft:#EFDDD4; --sage:#8B9574; --sage-soft:#E4E8DC;
+    --up:#A8543F; --down:#5C7A56;
+    --font-serif:'Noto Serif JP','Shippori Mincho',serif;
+    --font-sans:'Zen Kaku Gothic New','Hiragino Kaku Gothic ProN',sans-serif;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap');
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-sans);line-height:1.75;padding:0 0 80px;}
+  .wrap{max-width:920px;margin:0 auto;padding:56px 28px;}
+  .eyebrow{font-size:12px;letter-spacing:.22em;color:var(--sub);text-transform:uppercase;margin-bottom:14px;}
+  h1{font-family:var(--font-serif);font-weight:600;font-size:34px;margin:0 0 6px;letter-spacing:.02em;}
+  .sub-line{color:var(--sub);font-size:14px;margin-bottom:40px;}
+  .divider{border:none;border-top:1px solid var(--line);margin:40px 0;}
+  .divider.dashed{border-top:1px dashed var(--line);}
+  h2{font-family:var(--font-serif);font-size:21px;font-weight:600;margin:0 0 20px;display:flex;align-items:baseline;gap:10px;}
+  h2 .num{color:var(--rose);font-size:15px;letter-spacing:.05em;}
+  .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+  .kpi-card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:18px 14px;text-align:left;}
+  .kpi-label{font-size:11.5px;color:var(--sub);margin-bottom:8px;letter-spacing:.02em;}
+  .kpi-value{font-family:var(--font-serif);font-size:22px;font-weight:600;line-height:1.2;}
+  .kpi-value small{font-size:13px;font-weight:400;margin-left:2px;}
+  .kpi-delta{margin-top:8px;font-size:12.5px;font-weight:500;}
+  .kpi-delta.up{color:var(--up);}
+  .kpi-delta.down{color:var(--down);}
+  .kpi-delta.flat{color:var(--sub);}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--paper);border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+  th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--line);}
+  th:first-child,td:first-child{text-align:left;color:var(--sub);}
+  thead th{background:var(--rose-soft);color:var(--ink);font-weight:600;font-size:12.5px;}
+  tbody tr:last-child td{border-bottom:none;}
+  .delta-up{color:var(--up);font-weight:500;}
+  .delta-down{color:var(--down);font-weight:500;}
+  .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px;}
+  .chart-box{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:18px 16px 10px;}
+  .chart-title{font-size:13px;color:var(--sub);margin-bottom:10px;letter-spacing:.02em;}
+  canvas{max-height:220px;}
+  .insight-block{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:22px 24px;margin-bottom:14px;}
+  .insight-block h3{font-family:var(--font-serif);font-size:16px;margin:0 0 12px;display:flex;align-items:center;gap:8px;}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+  .dot.good{background:var(--sage);}
+  .dot.bad{background:var(--rose);}
+  .insight-block ul{margin:0;padding-left:20px;}
+  .insight-block li{margin-bottom:8px;font-size:14px;}
+  .insight-block li .fig{color:var(--rose);font-weight:600;}
+  .action-card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:22px 24px;margin-bottom:14px;position:relative;padding-left:70px;}
+  .action-num{position:absolute;left:20px;top:22px;font-family:var(--font-serif);font-size:26px;color:var(--rose-soft);-webkit-text-stroke:1.4px var(--rose);}
+  .action-card h3{font-family:var(--font-serif);font-size:16px;margin:0 0 8px;}
+  .action-card p{margin:0 0 8px;font-size:14px;color:var(--ink);}
+  .action-card .basis{font-size:12.5px;color:var(--sub);border-top:1px dashed var(--line);padding-top:8px;margin-top:10px;}
+  footer{text-align:center;color:var(--sub);font-size:12px;margin-top:50px;}
+  @media(max-width:720px){
+    .kpi-grid{grid-template-columns:repeat(2,1fr);}
+    .chart-grid{grid-template-columns:1fr;}
+    .action-card{padding-left:24px;}
+    .action-num{position:static;display:block;margin-bottom:6px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">Gypso ・ 刺しゅう命名書店 ／ Monthly Report 🐔</div>
+  <h1>2026年9月 月次レポート</h1>
+  <div class="sub-line">Instagram × BASE ｜ 対象期間：2026年9月（前月：8月）／ 最終月</div>
+
+  <hr class="divider">
+
+  <!-- ① KPI -->
+  <h2><span class="num">01</span>今月のKPIまとめ</h2>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">売上</div>
+      <div class="kpi-value">¥569,000</div>
+      <div class="kpi-delta up">▲ 10.7%（前月比）</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">注文数</div>
+      <div class="kpi-value">19<small>件</small></div>
+      <div class="kpi-delta flat">± 0%（前月と同数）</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">閲覧数（IG）</div>
+      <div class="kpi-value">1,324,142</div>
+      <div class="kpi-delta up">▲ 829.8%（前月比）</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">客単価</div>
+      <div class="kpi-value">¥29,947</div>
+      <div class="kpi-delta up">▲ 10.7%（前月比）</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">新規フォロワー</div>
+      <div class="kpi-value">646<small>人</small></div>
+      <div class="kpi-delta up">▲ 1,983.9%（前月比）</div>
+    </div>
+  </div>
+  <div class="insight-block" style="margin-top:16px;background:var(--sage-soft);border-color:var(--sage);">
+    <h3>▸ 9月の目標 vs 結果</h3>
+    <table>
+      <thead><tr><th>項目</th><th>目標</th><th>結果</th><th>達成率</th></tr></thead>
+      <tbody>
+        <tr><td>売上</td><td>¥460,000</td><td>¥569,000</td><td class="delta-up">達成（123.7%）</td></tr>
+        <tr><td>FD投稿</td><td>25本</td><td>17本</td><td class="delta-down">未達（68.0%）</td></tr>
+        <tr><td>リール投稿</td><td>18本</td><td>8本</td><td class="delta-down">未達（44.4%）</td></tr>
+        <tr><td>ストーリーズ</td><td>60本</td><td>56本</td><td class="delta-down">ほぼ達成（93.3%）</td></tr>
+        <tr><td>広告費</td><td>¥10,000</td><td>¥154</td><td class="delta-down">未達（1.5%）</td></tr>
+        <tr><td>スレッズ</td><td>週3日</td><td>データなし</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--sub);margin:10px 0 0;">売上は目標を大きく上回って達成🎉　一方でFD・リールは投稿数としては未達。ただしリールは「量より中身」という今月のチャレンジ通り、本数を絞った分、構成の見直し（台本の再現性検証など）に時間を割けた結果と読める。広告費が目標比1.5%にとどまったのは、オーガニックで十分伸びたため早々に出稿を止めた意図的な判断。</p>
+  </div>
+
+  <hr class="divider dashed">
+
+  <!-- ② 前月比較 -->
+  <h2><span class="num">02</span>前月との比較</h2>
+  <table>
+    <thead><tr><th>指標</th><th>8月</th><th>9月</th><th>増減</th><th>増減率</th></tr></thead>
+    <tbody>
+      <tr><td>売上</td><td>¥514,200</td><td>¥569,000</td><td class="delta-up">▲ ¥54,800</td><td class="delta-up">+10.7%</td></tr>
+      <tr><td>注文数</td><td>19件</td><td>19件</td><td>±0件</td><td>0.0%</td></tr>
+      <tr><td>IG閲覧数</td><td>142,417</td><td>1,324,142</td><td class="delta-up">▲ 1,181,725</td><td class="delta-up">+829.8%</td></tr>
+      <tr><td>リーチしたアカウント</td><td>45,098</td><td>831,485</td><td class="delta-up">▲ 786,387</td><td class="delta-up">+1,743.7%</td></tr>
+      <tr><td>客単価</td><td>¥27,063</td><td>¥29,947</td><td class="delta-up">▲ ¥2,884</td><td class="delta-up">+10.7%</td></tr>
+      <tr><td>新規フォロワー</td><td>31人</td><td>646人</td><td class="delta-up">▲ 615人</td><td class="delta-up">+1,983.9%</td></tr>
+      <tr><td>プロフアクセス数</td><td>2,540</td><td>9,623</td><td class="delta-up">▲ 7,083</td><td class="delta-up">+278.9%</td></tr>
+      <tr><td>外部リンクタップ数</td><td>466</td><td>1,624</td><td class="delta-up">▲ 1,158</td><td class="delta-up">+248.5%</td></tr>
+      <tr><td>インスタからの流入数</td><td>281</td><td>570</td><td class="delta-up">▲ 289</td><td class="delta-up">+102.8%</td></tr>
+      <tr><td>BASE閲覧数</td><td>692</td><td>1,258</td><td class="delta-up">▲ 566</td><td class="delta-up">+81.8%</td></tr>
+      <tr><td>購入率（受注÷BASE閲覧）</td><td>2.75%</td><td>1.51%</td><td class="delta-down">▼ 1.24pt</td><td class="delta-down">-45.0%</td></tr>
+      <tr><td>総投稿数（FD+リール+スト）</td><td>102本</td><td>81本</td><td class="delta-down">▼ 21本</td><td class="delta-down">-20.6%</td></tr>
+      <tr><td>広告費</td><td>¥5,373</td><td>¥154</td><td class="delta-down">▼ ¥5,219</td><td class="delta-down">-97.1%</td></tr>
+    </tbody>
+  </table>
+
+  <div class="chart-grid">
+    <div class="chart-box">
+      <div class="chart-title">売上・注文数の推移（12月〜9月）</div>
+      <canvas id="chartSales"></canvas>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">IG閲覧数・リーチの推移</div>
+      <canvas id="chartViews"></canvas>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">新規フォロワー数の推移</div>
+      <canvas id="chartFollowers"></canvas>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">投稿数の内訳（FD／リール／スト）</div>
+      <canvas id="chartPosts"></canvas>
+    </div>
+  </div>
+
+  <hr class="divider dashed">
+
+  <!-- ③ 広告まとめ -->
+  <h2><span class="num">03</span>9月の広告まとめ</h2>
+  <div class="insight-block">
+    <h3>▸ 出稿内訳</h3>
+    <table>
+      <thead><tr><th>投稿日</th><th>期間</th><th>消化金額</th><th>プロフアクセス</th><th>広告単価</th><th>フォロー数</th><th>フォロー単価</th></tr></thead>
+      <tbody>
+        <tr><td>9/17</td><td>1日</td><td>¥154</td><td>17</td><td>¥9</td><td>2人</td><td>¥77</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--sub);margin:10px 0 0;">出稿はこの1本・¥154のみ。オーガニックで十分伸びたため早々に出稿を止めた判断（メモ：「オーガニックで伸びたので使用期間のみで終了、今後使いまわす」）。結果としてROAS3,694%・CPA¥8.1と過去最高効率。</p>
+  </div>
+  <div class="insight-block">
+    <h3><span class="dot good"></span>広告よりオーガニックが主役の月</h3>
+    <ul>
+      <li>広告費は8月の<span class="fig">¥5,373→¥154（▼97.1%）</span>まで縮小したにもかかわらず、IG閲覧数・リーチともに桁違いに伸びている。今月の急成長はほぼ広告ではなく「伸ばす目的のトライアルリール」などオーガニック施策によるもの。</li>
+      <li>フォロー転換率（新規フォロワー÷リーチ）は8月0.069%→9月0.078%とわずかに改善しており、リーチが1,700%以上増えた中でも転換の質は落ちていない。</li>
+    </ul>
+  </div>
+
+  <hr class="divider dashed">
+
+  <!-- ④ 9月の重点施策 -->
+  <h2><span class="num">04</span>9月の重点施策・振り返り</h2>
+  <div class="insight-block">
+    <h3>▸ テーマ：「集客強化」</h3>
+    <p style="margin:0 0 10px;font-size:14px;">7月まで既存フォロワーへの販売は安定していた一方、新規流入は落ち着いていたため、9月は「新しい方に知ってもらい、販売時にはすでに“欲しい・待ちたい”と思ってもらえる状態をつくる」ことを重点課題に設定。</p>
+    <ul>
+      <li>リール投稿を増やすだけでなく広告も併用し、複数リールを少額でテスト→比較</li>
+      <li>オーダー会前はストーリーズでCTA（アンケート・リアクション等）を意識し「見るだけで終わらない発信」を強化</li>
+      <li>月の中盤、投稿本数を優先するあまり一時的にリールのリーチが伸び悩む時期があったが、道場での指摘を受けてカットの長さ・構成（見やすさ）を見直し、月末に改善</li>
+    </ul>
+  </div>
+  <div class="insight-block" style="background:var(--sage-soft);border-color:var(--sage);">
+    <h3><span class="dot good"></span>数字に出にくい成果</h3>
+    <ul>
+      <li>オーダー会前に、ストーリーズへのリアクションや「今回オーダーしたい」「次回お願いしたい」というDMが先月より多く発生。フォロワー数だけでは見えない「待ってくれる人」が増えた実感。</li>
+      <li>新色（期間限定カラー）については、告知だけでなく「匂わせ→季節性→ターゲット→定番カラーとの違い→限定感」という段階発信を設計し、販売日を待ってもらう状態づくりを意識。</li>
+      <li>新規集客に向けたトライアルリールを5本投稿。中でも過去にバズったリールの台本を一言一句変えず再編集して投稿したところ、今回も同様にバズを再現。台本・構成そのものの再現性が確認できたため、今後は広告用クリエイティブとして活用していく方針。</li>
+    </ul>
+  </div>
+
+  <hr class="divider dashed">
+
+  <!-- ⑤ 読み取れること -->
+  <h2><span class="num">05</span>今月の数字から読み取れること</h2>
+  <div class="insight-block">
+    <h3><span class="dot good"></span>良かった点</h3>
+    <ul>
+      <li>IG閲覧数<span class="fig">+829.8%</span>、リーチ<span class="fig">+1,743.7%</span>、新規フォロワー<span class="fig">+1,983.9%（31人→646人）</span>と、8月に課題としていた「新規認知」が今月一気に爆発的成長。投稿本数は8月より少ない（102本→81本）中での結果であり、量より構成・質の改善が効いたことがうかがえる。</li>
+      <li>売上も<span class="fig">¥569,000（+10.7%）</span>と過去最高水準を更新。客単価も<span class="fig">¥29,947（+10.7%）</span>と伸びているが、これは購買行動の変化というより、今回の期間限定カラーを高単価ラインのみで展開した（これまでは高単価・低単価を併売）ことが直接の要因。注文件数は8月と同じ19件のまま単価だけが上がっている。</li>
+      <li>広告費はほぼ使わず（¥154のみ）にこの結果が出ており、広告依存度を下げたままオーガニックで成果を出せた月。</li>
+    </ul>
+  </div>
+  <div class="insight-block" style="background:var(--sage-soft);border-color:var(--sage);">
+    <h3><span class="dot good"></span>新しい実験：漫画風投稿</h3>
+    <p style="margin:0 0 10px;font-size:14px;">「手足型を作品として残したママ」と「残さなかったママ」を数ヶ月後の気持ちで対比させる、AI画像を使った漫画風の投稿を実施。投稿から約1日で<span class="fig">閲覧2,000回以上・プロフアクセス24・リンクタップ6</span>という反応があった。</p>
+    <ul>
+      <li>インサイトでは1枚目より最後のページでの「いいね」が最も多く、最後まで読み進めてもらえていたのが特徴的。</li>
+      <li>商品説明だけでなく「自分だったら」を疑似体験してもらえる形式として機能した可能性があり、「商品の必要性を言葉だけで伝えづらい」「悩み→変化を見せたい」「購入後の未来をイメージしてほしい」というGypsoの商材と相性が良さそうという気づきがあった。</li>
+      <li>次回は「オプション、付ける？付けない？」をテーマに、購入前の迷いを解消できるか検証予定。</li>
+    </ul>
+  </div>
+  <div class="insight-block">
+    <h3><span class="dot bad"></span>課題点</h3>
+    <ul>
+      <li>注文数は8月と同じ<span class="fig">19件で横ばい</span>。フォロワー・リーチがこれだけ増えても、今月の売上には即座には反映されていない。購入率（受注÷BASE閲覧）も<span class="fig">1.51%（▼1.24pt）</span>とやや希薄化しており、新規層はまだ「見る・知る」段階で、購買にはタイムラグがあると考えられる（命名書はそもそも出産前後のタイミングに限定される商材のため）。</li>
+      <li>FD投稿は8月22本→9月17本、リールは21本→8本とやや減少。バズを狙ったトライアルリールに比重を置いた分、投稿の絶対量は落ちている。</li>
+    </ul>
+  </div>
+
+  <hr class="divider dashed">
+
+  <!-- ⑥ 今後に向けて -->
+  <h2><span class="num">06</span>今後に向けて（次回オーダー会への布石）</h2>
+
+  <div class="action-card">
+    <div class="action-num">01</div>
+    <h3>646人の新規フォロワーを「待つ人」に育てる導線をつくる</h3>
+    <p>今月獲得した新規フォロワーの多くはまだ購入に至っていない見込み層。固定ハイライトやストーリーズで「Gypsoとは何か」「なぜ新生児期専門なのか」を改めて伝え、次回オーダー会の告知を早めに届ける準備をする。</p>
+    <div class="basis">根拠：新規フォロワー+615人に対し注文数は横ばい（19件）。認知から購入までタイムラグがある商材だからこそ、今のうちに関係を育てる必要がある。</div>
+  </div>
+
+  <div class="action-card">
+    <div class="action-num">02</div>
+    <h3>再現性が確認できたバズ台本を広告クリエイティブに転用する</h3>
+    <p>過去にバズったリールの台本を一言一句変えず再編集して投稿したところ、今回も同様に伸びた。台本・構成自体に再現性があることが確認できたため、10月以降はこの型を広告用の動画として活用し、少額出稿でも安定したリーチを狙う。</p>
+    <div class="basis">根拠：9月のトライアルリール5本のうち、過去台本の再編集版が同水準でバズを再現。属人的なバズではなく、構成そのものに再現性があると判断できる。</div>
+  </div>
+
+  <div class="action-card">
+    <div class="action-num">03</div>
+    <h3>10月は「伸びるリール」より教育テーマのリールに重きを置く</h3>
+    <p>9月は新規集客を狙ったトライアルリール中心だったが、10月は方針を切り替え、Gypsoや命名書について知ってもらう教育テーマのリールを中心に据える。9月で増えた新規フォロワー・見込み層に対し、ブランド理解を深めてもらうフェーズと位置づける。</p>
+    <div class="basis">根拠：9月は新規フォロワー+615人に対し注文数は横ばい（19件）。認知は取れた状態のため、10月は「知ってもらう→理解してもらう」段階の発信に比重を移す。</div>
+  </div>
+
+  <div class="action-card">
+    <div class="action-num">04</div>
+    <h3>漫画風投稿を月1回、テーマを変えて継続する</h3>
+    <p>9月に試した漫画風投稿は最後まで読了してからの「いいね」が多く、疑似体験を促す形式として手応えがあった。次回は「オプション、付ける？付けない？」で購入前の迷い解消を狙う予定とのことなので、月1本ペースでテーマを変えながら継続し、効果のある切り口を蓄積していく。</p>
+    <div class="basis">根拠：投稿から約1日で閲覧2,000回以上・プロフアクセス24・リンクタップ6。最終ページでの「いいね」が最多という珍しい読了傾向が確認できた。</div>
+  </div>
+
+  <div class="insight-block" style="background:var(--rose-soft);border-color:var(--rose);">
+    <h3>🐔 ひとこと</h3>
+    <p style="margin:0;font-size:14.5px;">9月は「新しい方に届ける」を掲げた通り、数字が大きく応えてくれた月でしたね🔥　646人という新規フォロワーは、すぐの売上には直結していなくても、これからのGypsoを支える土台になっていくはず。オーダー会へのDMの多さも、その手応えの表れだと思います🐣</p>
+  </div>
+
+  <footer>🐔 Gypso ・ 刺しゅう命名書店 Monthly Report — 作成日 2026年10月1日</footer>
+</div>
+
+<script>
+const months = ['12月','1月','2月','3月','4月','5月','6月','7月','8月','9月'];
+const sales   = [33882,16185,0,328900,312000,752900,547885,427385,514200,569000];
+const orders  = [4,1,0,21,14,27,20,16,19,19];
+const igview  = [93009,92157,581251,877313,592705,769962,264869,80829,142417,1324142];
+const reach   = [33584,52842,376314,515047,334837,411980,113871,23444,45098,831485];
+const newFollow = [73,81,1162,629,514,381,106,72,31,646];
+const fd = [19,23,24,21,24,27,13,10,22,17];
+const reel = [23,17,16,7,4,7,11,7,21,8];
+const story = [54,35,54,74,64,61,55,29,59,56];
+
+const roseAccent = '#B97A63';
+const sageAccent = '#8B9574';
+const inkColor = '#3B3229';
+const gridColor = '#E3DACD';
+
+Chart.defaults.font.family = "'Zen Kaku Gothic New', sans-serif";
+Chart.defaults.color = '#8A7F72';
+Chart.defaults.font.size = 11;
+
+function baseOpts(extra={}){
+  return Object.assign({
+    responsive:true,
+    plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:12,font:{size:11}}}},
+    scales:{ x:{grid:{display:false}}, y:{grid:{color:gridColor},beginAtZero:true} }
+  }, extra);
+}
+
+new Chart(document.getElementById('chartSales'), {
+  type:'bar',
+  data:{labels:months, datasets:[
+    {label:'売上（円）', data:sales, backgroundColor:roseAccent, yAxisID:'y', borderRadius:4, order:2},
+    {label:'注文数（件）', data:orders, type:'line', borderColor:inkColor, backgroundColor:inkColor, yAxisID:'y1', tension:.3, order:1}
+  ]},
+  options: baseOpts({
+    scales:{
+      x:{grid:{display:false}},
+      y:{position:'left', grid:{color:gridColor}, ticks:{callback:v=>'¥'+v.toLocaleString()}},
+      y1:{position:'right', grid:{display:false}, beginAtZero:true}
+    }
+  })
+});
+
+new Chart(document.getElementById('chartViews'), {
+  type:'line',
+  data:{labels:months, datasets:[
+    {label:'IG閲覧数', data:igview, borderColor:roseAccent, backgroundColor:roseAccent, tension:.3},
+    {label:'リーチ', data:reach, borderColor:sageAccent, backgroundColor:sageAccent, tension:.3}
+  ]},
+  options: baseOpts()
+});
+
+new Chart(document.getElementById('chartFollowers'), {
+  type:'bar',
+  data:{labels:months, datasets:[
+    {label:'新規フォロワー（人）', data:newFollow, backgroundColor:sageAccent, borderRadius:4}
+  ]},
+  options: baseOpts({plugins:{legend:{display:false}}})
+});
+
+new Chart(document.getElementById('chartPosts'), {
+  type:'bar',
+  data:{labels:months, datasets:[
+    {label:'フィード', data:fd, backgroundColor:'#D8C6B4', stack:'s'},
+    {label:'リール', data:reel, backgroundColor:roseAccent, stack:'s'},
+    {label:'ストーリーズ', data:story, backgroundColor:sageAccent, stack:'s'}
+  ]},
+  options: baseOpts({
+    scales:{ x:{grid:{display:false}, stacked:true}, y:{grid:{color:gridColor}, stacked:true} }
+  })
+});
+</script>
+</body>
+</html>
